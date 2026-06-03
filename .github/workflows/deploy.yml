@@ -1,0 +1,126 @@
+# .github/workflows/deploy.yml
+name: Maritimo API — CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+
+  # ── Job 1: Test ──────────────────────────────────────────
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB:       maritimo_db
+          POSTGRES_USER:     postgres
+          POSTGRES_PASSWORD: maritimo_password_temp
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Django System Checks
+        env:
+          SECRET_KEY:    test-secret-key-for-ci-only
+          DEBUG:         True
+          ALLOWED_HOSTS: localhost,127.0.0.1
+          DB_NAME:       maritimo_db
+          DB_USER:       postgres
+          DB_PASSWORD:   maritimo_password_temp
+          DB_HOST:       localhost
+          DB_PORT:       5432
+          TEST_DB_NAME:  maritimo_test_db
+          CORS_ALLOW_ALL_ORIGINS: True
+        run: |
+          python manage.py check
+          python manage.py test --verbosity=2
+
+  # ── Job 2: Deploy ─────────────────────────────────────────
+  deploy:
+    name: Deploy to DigitalOcean Droplet
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Droplet
+        env:
+          VPS_HOST:    ${{ secrets.VPS_HOST }}
+          VPS_USER:    ${{ secrets.VPS_USERNAME }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+
+        run: |
+          ssh $VPS_USER@$VPS_HOST << ENDSSH
+            set -e
+
+            echo "── 1. Entrando al proyecto ──"
+            cd $DEPLOY_PATH
+
+            echo "── 2. Verificando repo git ──"
+            pwd
+            ls -la
+
+            if [ ! -d ".git" ]; then
+              echo "Repositorio no encontrado"
+              exit 1
+            fi
+
+            echo "── 3. Actualizando código ──"
+            git fetch origin
+            git reset --hard origin/main
+
+            echo "── 4. Instalando dependencias ──"
+            source .venv/bin/activate
+            pip install --upgrade pip
+            pip install -r requirements.txt
+
+            echo "── 5. Aplicando migraciones ──"
+            python manage.py migrate --noinput
+
+            echo "── 6. Recolectando estáticos ──"
+            python manage.py collectstatic --noinput --clear
+
+            echo "── 7. Reiniciando servicios ──"
+            sudo systemctl restart gunicorn-maritimo
+            sudo systemctl restart nginx
+
+            echo "── 8. Healthcheck ──"
+            sleep 3
+            curl -sf http://127.0.0.1/api/health/ && echo "API OK"
+
+            echo "Deploy completado con éxito mediante GitHub Actions CI/CD"
+          ENDSSH
