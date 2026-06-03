@@ -14,7 +14,9 @@
             "pm.test('Status 201', () => pm.response.to.have.status(201));",
             "const j = pm.response.json();",
             "pm.collectionVariables.set('access',  j.access);",
-            "pm.collectionVariables.set('refresh', j.refresh);"
+            "pm.collectionVariables.set('refresh', j.refresh);",
+            "pm.environment.set('access',  j.access);",
+            "pm.environment.set('refresh', j.refresh);"
           ]}}],
           "request": {
             "method": "POST",
@@ -29,7 +31,9 @@
             "pm.test('Status 200', () => pm.response.to.have.status(200));",
             "const j = pm.response.json();",
             "pm.collectionVariables.set('access',  j.access);",
-            "pm.collectionVariables.set('refresh', j.refresh);"
+            "pm.collectionVariables.set('refresh', j.refresh);",
+            "pm.environment.set('access',  j.access);",
+            "pm.environment.set('refresh', j.refresh);"
           ]}}],
           "request": {
             "method": "POST",
@@ -43,7 +47,8 @@
           "event": [{ "listen": "test", "script": { "exec": [
             "pm.test('Status 200', () => pm.response.to.have.status(200));",
             "const j = pm.response.json();",
-            "pm.collectionVariables.set('access',  j.access);"
+            "pm.collectionVariables.set('access',  j.access);",
+            "pm.environment.set('access',  j.access);"
           ]}}],
           "request": {
             "method": "POST",
@@ -164,7 +169,8 @@
           "event": [{ "listen": "test", "script": { "exec": [
             "pm.test('Status 201', () => pm.response.to.have.status(201));",
             "const j = pm.response.json();",
-            "pm.collectionVariables.set('puertoId', j.id);"
+            "pm.collectionVariables.set('puertoId', j.id);",
+            "pm.environment.set('puertoId', j.id);"
           ]}}],
           "request": {
             "method": "POST",
@@ -220,7 +226,8 @@
           "event": [{ "listen": "test", "script": { "exec": [
             "pm.test('Status 201', () => pm.response.to.have.status(201));",
             "const j = pm.response.json();",
-            "pm.collectionVariables.set('muelleId', j.id);"
+            "pm.collectionVariables.set('muelleId', j.id);",
+            "pm.environment.set('muelleId', j.id);"
           ]}}],
           "request": {
             "method": "POST",
@@ -276,7 +283,8 @@
           "event": [{ "listen": "test", "script": { "exec": [
             "pm.test('Status 201', () => pm.response.to.have.status(201));",
             "const j = pm.response.json();",
-            "pm.collectionVariables.set('buqueId', j.id);"
+            "pm.collectionVariables.set('buqueId', j.id);",
+            "pm.environment.set('buqueId', j.id);"
           ]}}],
           "request": {
             "method": "POST",
@@ -332,7 +340,8 @@
           "event": [{ "listen": "test", "script": { "exec": [
             "pm.test('Status 201', () => pm.response.to.have.status(201));",
             "const j = pm.response.json();",
-            "pm.collectionVariables.set('capitanId', j.id);"
+            "pm.collectionVariables.set('capitanId', j.id);",
+            "pm.environment.set('capitanId', j.id);"
           ]}}],
           "request": {
             "method": "POST",
@@ -388,7 +397,8 @@
           "event": [{ "listen": "test", "script": { "exec": [
             "pm.test('Status 201', () => pm.response.to.have.status(201));",
             "const j = pm.response.json();",
-            "pm.collectionVariables.set('atraqueId', j.id);"
+            "pm.collectionVariables.set('atraqueId', j.id);",
+            "pm.environment.set('atraqueId', j.id);"
           ]}}],
           "request": {
             "method": "POST",
@@ -444,7 +454,8 @@
           "event": [{ "listen": "test", "script": { "exec": [
             "pm.test('Status 201', () => pm.response.to.have.status(201));",
             "const j = pm.response.json();",
-            "pm.collectionVariables.set('inspeccionId', j.id);"
+            "pm.collectionVariables.set('inspeccionId', j.id);",
+            "pm.environment.set('inspeccionId', j.id);"
           ]}}],
           "request": {
             "method": "POST",
