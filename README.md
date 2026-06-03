@@ -4,13 +4,13 @@
   <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/Logo_UTE.png" alt="Logo Universidad UTE" width="300"/>
 </p>
 
-## FACULTAD DE CIENCIAS DE LA INGENIERÍA Y INDUSTRIAS
-### INGENIERÍA EN INFORMÁTICA / COMPUTACIÓN
+## FACULTAD TÉCNICA Y TECNOLÓGICA
+### CARRERA DE DESARROLLO DE SOFTWARE
 
 ---
 
 * **Proyecto:** Backend REST API — Control de Puerto Marítimo
-* **Materia:** Programación Web / Desarrollo Backend
+* **Materia:** Programación IV
 * **Estudiante:** Andrés Zambrano
 * **Docente:** Ing. Francisco Higuera
 * **Fecha:** Junio 2026
