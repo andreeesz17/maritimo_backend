@@ -1,0 +1,644 @@
+{
+	"info": {
+		"_postman_id": "837016a9-a24d-4b08-9971-cfaceed25a84",
+		"name": "Control Puerto Marítimo (JWT Autenticado)",
+		"description": "Colección completa con todo el ciclo CRUD y flujo de autenticación JWT (Login, Register, Profile, Logout).",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "0. Autenticación",
+			"item": [
+				{
+					"name": "Registro de Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"nuevo_usuario\",\n  \"email\": \"nuevo@example.com\",\n  \"password\": \"contraseña123\",\n  \"password2\": \"contraseña123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/register/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"register",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Iniciar Sesión (Login)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access) {",
+									"    pm.environment.set(\"access_token\", jsonData.access);",
+									"}",
+									"if (jsonData.refresh) {",
+									"    pm.environment.set(\"refresh_token\", jsonData.refresh);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"adminpassword123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/login/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"login",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refrescar Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"if (jsonData.access) {",
+									"    pm.environment.set(\"access_token\", jsonData.access);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/token/refresh/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"token",
+								"refresh",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Perfil de Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/profile/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								"profile",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cerrar Sesión (Logout)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/auth/logout/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"auth",
+								"logout",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "1. Puertos",
+			"item": [
+				{
+					"name": "Listar Puertos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/puertos/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"puertos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ver Detalle Puerto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/puertos/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"puertos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Puerto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Puerto de Valparaíso Local\",\n  \"ciudad\": \"Valparaíso\",\n  \"capacidad_maxima_buques\": 50,\n  \"estado\": \"activo\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/puertos/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"puertos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualizar Puerto (Patch)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"capacidad_maxima_buques\": 60\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/puertos/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"puertos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Eliminar Puerto",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/puertos/1/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"puertos",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "2. Muelles",
+			"item": [
+				{
+					"name": "Listar Muelles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/muelles/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"muelles",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Muelle",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"puerto_id\": 1,\n  \"codigo\": \"MLL-LOCAL-A\",\n  \"capacidad_atraque\": 5,\n  \"estado\": \"activo\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/muelles/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"muelles",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "3. Buques",
+			"item": [
+				{
+					"name": "Listar Buques",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/buques/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"buques",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Buque",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Estrella Marina\",\n  \"matricula\": \"EM-2026-XYZ\",\n  \"tipo_buque\": \"Carguero\",\n  \"capacidad_carga\": 15000.75,\n  \"pais_origen\": \"Chile\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/buques/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"buques",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "4. Capitanes",
+			"item": [
+				{
+					"name": "Listar Capitanes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/capitanes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"capitanes",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Capitan",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombres\": \"Pedro\",\n  \"apellidos\": \"Alvarado\",\n  \"licencia_navegacion\": \"LIC-990011-CL\",\n  \"nacionalidad\": \"Chile\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/capitanes/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"capitanes",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "5. Atraques",
+			"item": [
+				{
+					"name": "Listar Atraques",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/atraques/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"atraques",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Atraque",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"buque_id\": 1,\n  \"muelle_id\": 1,\n  \"capitan_id\": 1,\n  \"fecha_ingreso\": \"2026-06-03T10:00:00Z\",\n  \"fecha_salida\": \"2026-06-05T18:00:00Z\",\n  \"estado\": \"programado\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/atraques/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"atraques",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "6. Inspecciones",
+			"item": [
+				{
+					"name": "Listar Inspecciones",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/inspecciones/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspecciones",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Inspeccion",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"atraque_id\": 1,\n  \"fecha_inspeccion\": \"2026-06-03T12:00:00Z\",\n  \"resultado\": \"Aprobado\",\n  \"observaciones\": \"Inspección local exitosa, buque en óptimas condiciones.\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/inspecciones/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"inspecciones",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
