@@ -4,7 +4,11 @@ from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 
-from puerto.serializers.user import UserSerializer
+from puerto.serializers.user import (
+    UserSerializer,
+    UserProfileSerializer,
+    ChangePasswordSerializer,
+)
 from puerto.pagination import StandardPagination
 
 
@@ -16,10 +20,66 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(
         detail=False,
-        methods=['get'],
+        methods=['get', 'patch'],
         permission_classes=[IsAuthenticated],
         url_path='profile',
     )
     def profile(self, request):
-        serializer = UserSerializer(request.user)
+        if request.method == 'GET':
+            return Response(
+                UserProfileSerializer(request.user, context={'request': request}).data
+            )
+        serializer = UserProfileSerializer(
+            request.user,
+            data=request.data,
+            partial=True,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
         return Response(serializer.data)
+
+    @action(
+        detail=False,
+        methods=['post'],
+        permission_classes=[IsAuthenticated],
+        url_path='change-password',
+    )
+    def change_password(self, request):
+        serializer = ChangePasswordSerializer(
+            data=request.data,
+            context={'request': request},
+        )
+        serializer.is_valid(raise_exception=True)
+        request.user.set_password(serializer.validated_data['new_password'])
+        request.user.save()
+        return Response({'message': 'Contraseña actualizada correctamente.'})
+
+    @action(
+        detail=True,
+        methods=['post'],
+        permission_classes=[IsAdminUser],
+        url_path='toggle-active',
+    )
+    def toggle_active(self, request, pk=None):
+        user = self.get_object()
+        user.is_active = not user.is_active
+        user.save(update_fields=['is_active'])
+        state = 'activado' if user.is_active else 'desactivado'
+        return Response({'message': f'Usuario {state}.', 'is_active': user.is_active})
+
+    @action(
+        detail=False,
+        methods=['get'],
+        permission_classes=[IsAdminUser],
+        url_path='stats',
+    )
+    def stats(self, request):
+        qs = User.objects.all()
+        return Response({
+            'total':    qs.count(),
+            'active':   qs.filter(is_active=True).count(),
+            'inactive': qs.filter(is_active=False).count(),
+            'staff':    qs.filter(is_staff=True).count(),
+        })
+

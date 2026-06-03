@@ -36,3 +36,33 @@ class UserSerializer(serializers.ModelSerializer):
             'is_staff', 'is_active', 'date_joined',
         ]
         read_only_fields = ['id', 'date_joined']
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model  = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name']
+        read_only_fields = ['id']
+
+    def validate_email(self, value):
+        request = self.context.get('request')
+        if User.objects.filter(email=value).exclude(pk=request.user.pk).exists():
+            raise serializers.ValidationError('Este correo ya está en uso.')
+        return value
+
+
+class ChangePasswordSerializer(serializers.Serializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password     = serializers.CharField(min_length=8, write_only=True)
+    new_password2    = serializers.CharField(write_only=True)
+
+    def validate_current_password(self, value):
+        if not self.context['request'].user.check_password(value):
+            raise serializers.ValidationError('La contraseña actual es incorrecta.')
+        return value
+
+    def validate(self, data):
+        if data['new_password'] != data['new_password2']:
+            raise serializers.ValidationError({'new_password2': 'Las contraseñas no coinciden.'})
+        return data
+
