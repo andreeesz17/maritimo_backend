@@ -1,11 +1,12 @@
 # UNIVERSIDAD UTE
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/Logo_UTE.png" alt="Logo Universidad UTE" width="300"/>
+  <img src="https://www.ute.edu.ec/wp-content/uploads/2020/06/cropped-logo-ute-horizontal-1.png" alt="Logo Universidad UTE" width="300"/>
 </p>
 
-## FACULTAD TÉCNICA Y TECNOLÓGICA
+## ESCUELA DE TECNOLOGÍAS
 ### CARRERA DE DESARROLLO DE SOFTWARE
+
 
 ---
 
