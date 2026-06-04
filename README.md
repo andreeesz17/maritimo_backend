@@ -1,7 +1,7 @@
 # UNIVERSIDAD UTE
 
 <p align="center">
-  <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/Logo_UTE.png" alt="Logo Universidad UTE" width="300"/>
+  <img src="https://scontent.fuio11-1.fna.fbcdn.net/v/t39.30808-6/453605587_122095148588461256_7673091839495313886_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=pQVEKPOSboIQ7kNvwFoXicn&_nc_oc=AdpTXDKAIbeexIhVmvA-XHzosMtnmNhdlM0Y-FGOJslUZP_0jTuoL_TAFrN1RTlZ9I8&_nc_zt=23&_nc_ht=scontent.fuio11-1.fna&_nc_gid=u6X12X37qzporUbd51ebYQ&_nc_ss=7a2a8&oh=00_Af_X187yW92QJ91Ef5jzbfFyljVuxMOg7FlgQw9BSvWcpw&oe=6A2799BA" alt="Logo Universidad UTE" width="300"/>
 </p>
 
 ## ESCUELA DE TECNOLOGÍAS
